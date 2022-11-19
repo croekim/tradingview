@@ -1,0 +1,21 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © dokang
+
+//@version=5
+strategy("변동성돌파", pyramiding=2, overlay = true, initial_capital = 100000, default_qty_type = strategy.percent_of_equity, default_qty_value = 100, process_orders_on_close = true)
+start_time = input.time(timestamp("2021-01-01"), confirm = true)
+end_time = input.time(timestamp("2022-12-30"), confirm = true)
+is_in_time = time >= start_time and time <= end_time
+
+
+length = high - low
+k = input.float(0.5)
+
+new_length = length * k 
+entry_price = close + new_length
+plot(close, offset = 1, linewidth = 2, color = color.white) 
+plot(entry_price, offset = 1, linewidth = 2, color = color.yellow) 
+
+if is_in_time
+    strategy.entry("매수", strategy.long, stop = entry_price)
+    strategy.close("매수")
